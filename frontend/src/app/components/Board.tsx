@@ -1,32 +1,33 @@
+// src/app/components/Board.tsx
 'use client';
 
-import React from 'react';
-import List from './List';
+import React, { useState } from 'react';
+import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
+import { arrayMove, SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
+import SortableList from './SortableList';
+import type { BoardType, ListType } from '../types';
 
-interface CardType {
-  id: string;
-  title: string;
-  description: string;
-}
+export default function Board({ initialBoard }: { initialBoard: BoardType }) {
+  const [lists, setLists] = useState<ListType[]>(initialBoard.lists);
 
-interface ListType {
-  id: string;
-  title: string;
-  cards: CardType[];
-}
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (active.id !== over?.id) {
+      const oldIndex = lists.findIndex((list) => list.id === active.id);
+      const newIndex = lists.findIndex((list) => list.id === over?.id);
+      setLists((items) => arrayMove(items, oldIndex, newIndex));
+    }
+  };
 
-interface BoardType {
-  id: string;
-  title: string;
-  lists: ListType[];
-}
-
-export default function Board({ board }: { board: BoardType }) {
   return (
-    <div className="flex gap-4 overflow-auto">
-      {board.lists.map((list) => (
-        <List key={list.id} list={list} />
-      ))}
-    </div>
+    <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <SortableContext items={lists.map((list) => list.id)} strategy={horizontalListSortingStrategy}>
+        <div className="flex gap-4 overflow-auto">
+          {lists.map((list) => (
+            <SortableList key={list.id} list={list} />
+          ))}
+        </div>
+      </SortableContext>
+    </DndContext>
   );
 }

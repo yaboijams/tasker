@@ -1,16 +1,10 @@
+// src/app/components/Card.tsx
 'use client';
 
 import React from 'react';
+import type { CardType } from '../types';
 
-interface CardProps {
-  card: {
-    id: string;
-    title: string;
-    description: string;
-  };
-}
-
-export default function Card({ card }: CardProps) {
+export default function Card({ card }: { card: CardType }) {
   return (
     <div className="border rounded p-2 bg-white shadow">
       <h3 className="font-bold">{card.title}</h3>

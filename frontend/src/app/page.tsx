@@ -1,11 +1,11 @@
+// src/app/page.tsx
 'use client';
 
 import React, { useState } from 'react';
-import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import Board from './components/Board';
+import type { BoardType } from './types';
 
-// Example board data (in a real app, fetch from your backend)
-const initialBoard = {
+const initialBoard: BoardType = {
   id: 'board-1',
   title: 'My Board',
   lists: [
@@ -35,23 +35,10 @@ const initialBoard = {
 export default function HomePage() {
   const [board, setBoard] = useState(initialBoard);
 
-  // Handle the drag end event from dnd-kit
-  const handleDragEnd = (event: DragEndEvent) => {
-    // event.active: the item being dragged
-    // event.over: the drop target (if any)
-    // In a full implementation, you'd move the card from one list to another
-    console.log('Drag Ended:', event.active.id, 'dropped over', event.over?.id);
-    // For now, just log the event. You can implement logic to reorder cards or move them to a new list.
-  };
-
   return (
     <main className="p-4">
       <h1 className="text-3xl font-bold mb-4">Task Manager Board</h1>
-
-      {/* Wrap your entire board in a DndContext to enable drag and drop */}
-      <DndContext onDragEnd={handleDragEnd}>
-        <Board board={board} />
-      </DndContext>
+      <Board initialBoard={board} />
     </main>
   );
 }

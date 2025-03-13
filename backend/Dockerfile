@@ -1,6 +1,6 @@
-FROM node:14-alpine
+FROM node:16-alpine
 
-# Create app directory
+# Set working directory
 WORKDIR /app
 
 # Copy package.json and package-lock.json
@@ -9,11 +9,11 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
-# Copy the rest of your backend code
+# Copy the rest of your application code
 COPY . .
 
-# Expose the port your app runs on (3001 in this case)
+# Expose the port your app runs on (e.g., 3001)
 EXPOSE 3001
 
-# Run the index.js script
+# Use the correct entry point; adjust if necessary
 CMD ["node", "src/index.js"]

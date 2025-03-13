@@ -4,10 +4,11 @@ const tasksController = require("../controllers/tasksController");
 
 // GET all tasks
 router.get("/", tasksController.getAllTasks);
-
 // POST create a new task
 router.post("/", tasksController.createTask);
-
-// Additional routes: PUT to update, DELETE to remove, etc.
+// PUT update a task by ID
+router.put("/:id", tasksController.updateTask);
+// DELETE a task by ID
+router.delete("/:id", tasksController.deleteTask);
 
 module.exports = router;

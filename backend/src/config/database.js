@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 async function connectToDatabase() {
   try {
     // For example, if you store your MongoDB URI in .env as MONGO_URI
-    const dbUri = process.env.MONGO_URI || "mongodb://localhost:27017/tasker";
+    const dbUri =process.env.MONGO_URI || "mongodb://localhost:27017/tasker";
     await mongoose.connect(dbUri, {
       useNewUrlParser: true,
       useUnifiedTopology: true

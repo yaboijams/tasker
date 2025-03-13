@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend          # Path to your Dockerfile directory
+    container_name: backend   # (Optional) Name for the container
+    ports:
+      - "3001:3001"           # Map container port 3001 to host port 3001
+    # volumes:
+    #   - ./backend:/app      # (Optional) If you want live reload in development
+    # command: npm run dev    # (Optional) If you have a dev script in package.json
+
+  # Uncomment and adapt if you have a frontend you also want to run via Docker
+  # frontend:
+  #   build: ./frontend
+  #   container_name: frontend
+  #   ports:
+  #     - "3000:3000"
+  #   # volumes:
+  #   #   - ./frontend:/app
+  #   # command: npm run dev

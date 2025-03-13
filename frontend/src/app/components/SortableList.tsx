@@ -11,10 +11,9 @@ interface SortableListProps {
   listId: string;
   title: string;
   cards: CardType[];
-  onAddCard: (listId: string, newCard: CardType) => void;
 }
 
-export default function SortableList({ listId, title, cards, onAddCard }: SortableListProps) {
+export default function SortableList({ listId, title, cards }: SortableListProps) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: listId,
   });
@@ -26,7 +25,7 @@ export default function SortableList({ listId, title, cards, onAddCard }: Sortab
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <List listId={listId} title={title} cards={cards} onAddCard={onAddCard} />
+      <List listId={listId} title={title} cards={cards} />
     </div>
   );
 }

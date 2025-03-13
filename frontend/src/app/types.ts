@@ -1,11 +1,8 @@
 // src/app/types.ts
-
 export interface CardType {
     id: string;
     title: string;
     description: string;
-    dueDate?: string;
-    labels?: string[];
   }
   
   export interface ListType {

@@ -10,7 +10,7 @@ import type { CardType } from '../types';
 export default function SortableCard({ card, listId }: { card: CardType; listId: string }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: card.id,
-    data: { listId },
+    data: { listId }, // We store the originating listId in the data
   });
 
   const style = {

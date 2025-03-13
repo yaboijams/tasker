@@ -7,8 +7,12 @@ import { CSS } from '@dnd-kit/utilities';
 import Card from './Card';
 import type { CardType } from '../types';
 
-export default function SortableCard({ card }: { card: CardType }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: card.id });
+export default function SortableCard({ card, listId }: { card: CardType; listId: string }) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: card.id,
+    data: { listId },
+  });
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,

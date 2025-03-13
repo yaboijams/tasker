@@ -5,10 +5,20 @@ import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import List from './List';
-import type { ListType } from '../types';
+import type { CardType } from '../types';
 
-export default function SortableList({ list }: { list: ListType }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: list.id });
+interface SortableListProps {
+  listId: string;
+  title: string;
+  cards: CardType[];
+  onAddCard: (listId: string, newCard: CardType) => void;
+}
+
+export default function SortableList({ listId, title, cards, onAddCard }: SortableListProps) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: listId,
+  });
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -16,7 +26,7 @@ export default function SortableList({ list }: { list: ListType }) {
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <List list={list} />
+      <List listId={listId} title={title} cards={cards} onAddCard={onAddCard} />
     </div>
   );
 }

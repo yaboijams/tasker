@@ -67,4 +67,8 @@ task-manager/
     └── workflows/
         └── ci-cd.yml
 
-
+```
+Run docker server using this
+```
+docker-compose up --build
+```

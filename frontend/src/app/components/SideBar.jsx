@@ -17,7 +17,7 @@ const Sidebar = ({ boards, selectedBoardId, onSelectBoard, onCreateBoard }) => {
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="text-[var(--foreground)] focus:outline-none transform transition-transform duration-200 active:scale-95"
+          className="cursor-pointer text-[var(--foreground)] focus:outline-none transform transition-transform duration-200 active:scale-95"
         >
           {collapsed ? '→' : '←'}
         </button>
@@ -46,7 +46,7 @@ const Sidebar = ({ boards, selectedBoardId, onSelectBoard, onCreateBoard }) => {
         <>
           <button
             onClick={onCreateBoard}
-            className="bg-[var(--persiangreen)] text-white px-3 py-1 rounded hover:bg-opacity-90 mb-4 transform transition-transform duration-200 active:scale-95"
+            className="cursor-pointer bg-[var(--persiangreen)] text-white px-3 py-1 rounded hover:bg-opacity-90 mb-4 transform transition-transform duration-200 active:scale-95"
           >
             New Board
           </button>

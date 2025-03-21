@@ -3,6 +3,11 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --persiangreen: #1b998b;
+  --magnolla: #f8f1ff;
+  --thistle: #decdf5;
+  --dimgrey: #656176;
+  --davygrey: #534d56;
 }
 
 @theme inline {
@@ -20,14 +25,5 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  margin: 0;
-  min-height: 100vh;            /* Ensure body covers full viewport height */
-  display: flex;                /* Enable Flexbox layout */
-  justify-content: center;      /* Center horizontally */
-  align-items: center;          /* Center vertically */
-  text-align: center;           /* Optional: center text content */
-  padding: 1rem;                /* Optional: some padding for small screens */
+
 }

@@ -1,25 +1,24 @@
 // src/app/components/Board.tsx
-'use client';
+"use client";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   DndContext,
   DragEndEvent,
-  closestCenter,
   DragOverlay,
+  closestCenter,
   PointerSensor,
   useSensor,
   useSensors,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import {
   SortableContext,
   horizontalListSortingStrategy,
   arrayMove,
-} from '@dnd-kit/sortable';
-
-import SortableList from './SortableList';
-import Card from './Card';
-import type { BoardType, CardType } from '../types';
+} from "@dnd-kit/sortable";
+import SortableList from "./SortableList";
+import Card from "./Card";
+import type { BoardType, CardType } from "../types";
 
 interface BoardProps {
   initialBoard: BoardType;
@@ -31,7 +30,7 @@ interface ListData {
 }
 
 export default function Board({ initialBoard }: BoardProps) {
-  // Convert lists array -> { [listId]: { title, cards } }
+  // Convert initialBoard.lists array to an object keyed by listId
   const [lists, setLists] = useState<Record<string, ListData>>(() => {
     const obj: Record<string, ListData> = {};
     initialBoard.lists.forEach((l) => {
@@ -48,7 +47,6 @@ export default function Board({ initialBoard }: BoardProps) {
     initialBoard.lists.map((l) => l.id)
   );
 
-  // For smooth drag
   const sensors = useSensors(useSensor(PointerSensor));
   const [activeCard, setActiveCard] = useState<CardType | null>(null);
 
@@ -72,7 +70,7 @@ export default function Board({ initialBoard }: BoardProps) {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over) {
-      // Dropped outside any valid list => revert
+      // Dropped outside any valid drop zone; revert changes
       setActiveCard(null);
       return;
     }
@@ -80,9 +78,8 @@ export default function Board({ initialBoard }: BoardProps) {
     const activeListId = active.data.current?.listId;
     const overListId = over.data.current?.listId;
 
-    // If we are dragging a list
+    // 1) Reordering Lists (if dragging a list)
     if (!activeListId && !overListId) {
-      // Reorder lists horizontally
       if (active.id !== over.id) {
         const oldIndex = listOrder.indexOf(active.id as string);
         const newIndex = listOrder.indexOf(over.id as string);
@@ -92,27 +89,23 @@ export default function Board({ initialBoard }: BoardProps) {
       return;
     }
 
-    // If we are dragging a card
+    // 2) Reordering or moving a Card
     if (activeListId && overListId) {
-      // If it's the same list => reorder within the list
+      // Case: Card moved within the same list
       if (activeListId === overListId) {
         const currentCards = [...lists[activeListId].cards];
         const oldIndex = currentCards.findIndex((c) => c.id === active.id);
         const newIndex = currentCards.findIndex((c) => c.id === over.id);
 
-        // If user dropped on empty space in the same list
-        if (over.id === overListId) {
-          currentCards.push(...currentCards.splice(oldIndex, 1));
-        } else if (oldIndex !== newIndex && newIndex !== -1) {
-          arrayMove(currentCards, oldIndex, newIndex);
+        if (oldIndex !== newIndex && newIndex !== -1) {
+          const reordered = arrayMove(currentCards, oldIndex, newIndex);
+          setLists({
+            ...lists,
+            [activeListId]: { ...lists[activeListId], cards: reordered },
+          });
         }
-
-        setLists({
-          ...lists,
-          [activeListId]: { ...lists[activeListId], cards: currentCards },
-        });
       } else {
-        // Cross-list move
+        // Case: Card moved to a different list
         const sourceCards = [...lists[activeListId].cards];
         const activeIndex = sourceCards.findIndex((c) => c.id === active.id);
         if (activeIndex === -1) return;
@@ -120,12 +113,14 @@ export default function Board({ initialBoard }: BoardProps) {
         const [movedCard] = sourceCards.splice(activeIndex, 1);
         const destCards = [...lists[overListId].cards];
 
-        // If dropping on the empty list => over.id === overListId
-        if (over.id === overListId) {
-          // Just push at the end
+        // Inside handleDragEnd in Board.tsx, in the cross-list move block:
+        if (
+          destCards.length === 0 ||
+          over.id === overListId ||
+          over.id === `${overListId}-placeholder`
+        ) {
           destCards.push(movedCard);
         } else {
-          // Insert at the position of the card the user dropped onto
           const overIndex = destCards.findIndex((c) => c.id === over.id);
           if (overIndex >= 0) {
             destCards.splice(overIndex, 0, movedCard);
@@ -152,7 +147,10 @@ export default function Board({ initialBoard }: BoardProps) {
       onDragCancel={handleDragCancel}
       onDragEnd={handleDragEnd}
     >
-      <SortableContext items={listOrder} strategy={horizontalListSortingStrategy}>
+      <SortableContext
+        items={listOrder}
+        strategy={horizontalListSortingStrategy}
+      >
         <div className="flex gap-4 overflow-auto">
           {listOrder.map((listId) => {
             const { title, cards } = lists[listId];
@@ -167,8 +165,9 @@ export default function Board({ initialBoard }: BoardProps) {
           })}
         </div>
       </SortableContext>
-
-      <DragOverlay>{activeCard ? <Card card={activeCard} /> : null}</DragOverlay>
+      <DragOverlay>
+        {activeCard ? <Card card={activeCard} /> : null}
+      </DragOverlay>
     </DndContext>
   );
 }

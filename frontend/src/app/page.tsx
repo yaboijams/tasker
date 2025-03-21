@@ -1,32 +1,30 @@
 // src/app/page.tsx
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Board from './components/Board';
-import type { BoardType } from './types';
+import React, { useState } from "react";
+import Board from "./components/Board";
+import type { BoardType } from "./types";
 
 const initialBoard: BoardType = {
-  id: 'board-1',
-  title: 'My Board',
+  id: "board-1",
+  title: "My Board",
   lists: [
     {
-      id: 'list-1',
-      title: 'Todo',
+      id: "list-1",
+      title: "Todo",
       cards: [
-        { id: 'card-1', title: 'Task 1', description: 'First task' },
-        { id: 'card-2', title: 'Task 2', description: 'Second task' },
+        { id: "card-1", title: "Task 1", description: "First task" },
+        { id: "card-2", title: "Task 2", description: "Second task" },
       ],
     },
     {
-      id: 'list-2',
-      title: 'In Progress',
-      cards: [
-        { id: 'card-3', title: 'Task 3', description: 'Third task' },
-      ],
+      id: "list-2",
+      title: "In Progress",
+      cards: [{ id: "card-3", title: "Task 3", description: "Third task" }],
     },
     {
-      id: 'list-3',
-      title: 'Done',
+      id: "list-3",
+      title: "Done",
       cards: [],
     },
   ],

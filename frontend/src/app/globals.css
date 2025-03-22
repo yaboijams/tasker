@@ -11,6 +11,28 @@
   --white:#ffffff;
   --darkerwhite:#ece8e8;
 }
+@keyframes popOut {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+.pop-out-hover {
+  @apply transition-transform duration-200 ease-in-out;
+}
+
+.pop-out-hover:hover {
+  animation: popOut 0.3s ease-in-out forwards;
+}
 
 @theme inline {
   --color-background: var(--background);

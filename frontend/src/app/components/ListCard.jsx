@@ -20,7 +20,7 @@ const ListCard = ({
   };
 
   return (
-    <div className="bg-[var(--white)] text-[var(--foreground)] border-2 border-solid border-[var(--dimgrey)] p-4 rounded-md shadow mb-2 min-w-[250px] flex flex-col  hover:bg-[var(--darkerwhite)] focus:outline-2 focus:outline-offset-2 pop-out-hover">
+    <div className="bg-[var(--white)] text-[var(--foreground)] border-2 border-solid border-[var(--dimgrey)] p-4 rounded-md shadow mb-2 min-w-[250px] flex flex-col pop-out-hover ">
       {/* List Header with task-add button */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-bold text-lg">{list.title}</h3>

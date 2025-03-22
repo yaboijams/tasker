@@ -15,14 +15,17 @@
   0% {
     transform: scale(1);
     opacity: 1;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
   }
   50% {
     transform: scale(1.1);
     opacity: 1;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
   }
   100% {
     transform: scale(1.05);
     opacity: 1;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
   }
 }
 
@@ -33,6 +36,7 @@
 .pop-out-hover:hover {
   animation: popOut 0.3s ease-in-out forwards;
 }
+
 
 @theme inline {
   --color-background: var(--background);

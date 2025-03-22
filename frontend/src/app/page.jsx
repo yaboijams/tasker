@@ -162,7 +162,7 @@ const HomePage = () => {
       <NewTask
         isOpen={isTaskModalOpen}
         onClose={() => setIsTaskModalOpen(false)}
-        onSubmit={() => {}}
+        onSubmit={handleAddTask}
         listId={activeListId}
       />
       <NewList

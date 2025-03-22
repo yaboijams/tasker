@@ -30,17 +30,22 @@ const HomePage = () => {
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [isListModalOpen, setIsListModalOpen] = useState(false);
   const [activeListId, setActiveListId] = useState(null);
+
+  // For confetti fade-out effect
   const [showConfetti, setShowConfetti] = useState(false);
+  const [fadeOutConfetti, setFadeOutConfetti] = useState(false);
 
   // Detect screen size for Confetti
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
   });
-
   useEffect(() => {
     const handleResize = () => {
-      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -64,7 +69,6 @@ const HomePage = () => {
         return list;
       })
     );
-
     setIsTaskModalOpen(false);
   };
 
@@ -87,7 +91,7 @@ const HomePage = () => {
     // Additional logic can be added here if needed.
   };
 
-  // Handle task movement with confetti trigger
+  // Handle task movement with confetti trigger and smooth fade out.
   const onTaskDrop = (e, targetListId) => {
     e.preventDefault();
     const data = JSON.parse(e.dataTransfer.getData("task"));
@@ -136,7 +140,15 @@ const HomePage = () => {
       // Trigger Confetti if moving to "Done" list
       if (updatedLists[targetListIndex].title === "Done") {
         setShowConfetti(true);
-        setTimeout(() => setShowConfetti(false), 3000);
+        // After 5 seconds, trigger fade out
+        setTimeout(() => {
+          setFadeOutConfetti(true);
+        }, 5000);
+        // After 6 seconds, unmount the confetti
+        setTimeout(() => {
+          setShowConfetti(false);
+          setFadeOutConfetti(false);
+        }, 6000);
       }
 
       return updatedLists;
@@ -145,9 +157,23 @@ const HomePage = () => {
 
   return (
     <div className="flex h-screen">
-      {/* Confetti Effect */}
+      {/* Confetti Effect with smooth fade-out */}
       {showConfetti && (
-        <Confetti width={windowSize.width} height={windowSize.height} />
+        <div
+          className={`absolute z-50 pointer-events-none ${
+            fadeOutConfetti
+              ? "opacity-0 transition-opacity duration-1000"
+              : "opacity-100 transition-opacity duration-1000"
+          }`}
+        >
+          <Confetti
+            width={windowSize.width}
+            height={windowSize.height}
+            drawShape
+            numberOfPieces={500}
+            colors={["#1b998b", "#f8f1ff", "#decdf5", "#998cd3"]}
+          />
+        </div>
       )}
 
       {/* Sidebar remains outside the row structure */}
@@ -158,7 +184,7 @@ const HomePage = () => {
         onCreateBoard={() => setIsModalOpen(true)}
       />
 
-      {/* Main content area with three equal rows */}
+      {/* Main content area divided into three equal rows */}
       <div className="flex flex-col flex-1">
         {/* Top Row: Widgets */}
         <div className="flex-1 bg-blue-100 overflow-auto">

@@ -1,12 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Confetti from "react-confetti";
+import dynamic from "next/dynamic";
 import Sidebar from "./components/SideBar";
 import TaskContainer from "./components/TaskContainer";
+import WidgetsContainer from "./components/WidgetsContainer";
 import NewBoard from "./modals/NewBoard";
 import NewTask from "./modals/NewTask";
 import NewList from "./modals/NewList";
+
+// Dynamically import Confetti for client-side rendering only
+const Confetti = dynamic(() => import("react-confetti"), { ssr: false });
 
 const HomePage = () => {
   const [lists, setLists] = useState([
@@ -26,7 +30,7 @@ const HomePage = () => {
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [isListModalOpen, setIsListModalOpen] = useState(false);
   const [activeListId, setActiveListId] = useState(null);
-  const [showConfetti, setShowConfetti] = useState(false); // Confetti state
+  const [showConfetti, setShowConfetti] = useState(false);
 
   // Detect screen size for Confetti
   const [windowSize, setWindowSize] = useState({
@@ -47,7 +51,6 @@ const HomePage = () => {
     setActiveListId(listId);
     setIsTaskModalOpen(true);
   };
-  
 
   // Handle adding a new task to a list
   const handleAddTask = (listId, taskDetails) => {
@@ -80,9 +83,9 @@ const HomePage = () => {
     e.dataTransfer.setData("task", JSON.stringify({ task, listId }));
   };
 
-  const onTaskDragEnd = () =>{
-    
-  }
+  const onTaskDragEnd = () => {
+    // Additional logic can be added here if needed.
+  };
 
   // Handle task movement with confetti trigger
   const onTaskDrop = (e, targetListId) => {
@@ -130,10 +133,10 @@ const HomePage = () => {
         tasks: updatedTargetTasks,
       };
 
-      // 🎉 Trigger Confetti if moving to "Done" list
+      // Trigger Confetti if moving to "Done" list
       if (updatedLists[targetListIndex].title === "Done") {
         setShowConfetti(true);
-        setTimeout(() => setShowConfetti(false), 3000); // Confetti disappears after 3 seconds
+        setTimeout(() => setShowConfetti(false), 3000);
       }
 
       return updatedLists;
@@ -147,22 +150,39 @@ const HomePage = () => {
         <Confetti width={windowSize.width} height={windowSize.height} />
       )}
 
+      {/* Sidebar remains outside the row structure */}
       <Sidebar
         boards={boards}
         selectedBoardId={selectedBoardId}
         onSelectBoard={(id) => setSelectedBoardId(id)}
         onCreateBoard={() => setIsModalOpen(true)}
       />
-      <main className="flex-1 p-4 bg-gray-50">
-        <TaskContainer
-          lists={lists}
-          onTaskDragStart={onTaskDragStart}
-          onTaskDragEnd={onTaskDragEnd}
-          onTaskDrop={onTaskDrop} // Updated to trigger confetti
-          onAddTask={openTaskModal}
-          onAddList={() => setIsListModalOpen(true)}
-        />
-      </main>
+
+      {/* Main content area with three equal rows */}
+      <div className="flex flex-col flex-1">
+        {/* Top Row: Widgets */}
+        <div className="flex-1 bg-blue-100 overflow-auto">
+          <WidgetsContainer />
+        </div>
+
+        {/* Middle Row: TaskContainer */}
+        <div className="flex-1 bg-gray-50 overflow-auto">
+          <TaskContainer
+            lists={lists}
+            onTaskDragStart={onTaskDragStart}
+            onTaskDragEnd={onTaskDragEnd}
+            onTaskDrop={onTaskDrop}
+            onAddTask={openTaskModal}
+            onAddList={() => setIsListModalOpen(true)}
+          />
+        </div>
+
+        {/* Bottom Row: Dummy Section */}
+        <div className="flex-1 bg-green-100 flex items-center justify-center">
+          <p className="text-lg text-gray-700">Dummy Bottom Section Content</p>
+        </div>
+      </div>
+
       <NewBoard
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

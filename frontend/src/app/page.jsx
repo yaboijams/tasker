@@ -36,19 +36,31 @@ const HomePage = () => {
   const [fadeOutConfetti, setFadeOutConfetti] = useState(false);
 
   // Detect screen size for Confetti
+  // Initialize with safe default values since window is undefined on the server.
   const [windowSize, setWindowSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width: 0,
+    height: 0,
   });
+
   useEffect(() => {
-    const handleResize = () => {
+    if (typeof window !== "undefined") {
+      // Set initial window size
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
       });
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+
+      // Update state on window resize
+      const handleResize = () => {
+        setWindowSize({
+          width: window.innerWidth,
+          height: window.innerHeight,
+        });
+      };
+
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }
   }, []);
 
   // Open the new task modal for a specific list

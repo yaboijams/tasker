@@ -20,7 +20,7 @@ const ListCard = ({
   };
 
   return (
-    <div className="bg-[var(--magento)] text-[var(--foreground)] p-4 rounded-md shadow mb-2 min-w-[250px] flex flex-col">
+    <div className="bg-[var(--white)] text-[var(--foreground)] border-2 border-solid border-[var(--dimgrey)] p-4 rounded-md shadow mb-2 min-w-[250px] flex flex-col  hover:bg-[var(--darkerwhite)] focus:outline-2 focus:outline-offset-2 hover:animate-bounce">
       {/* List Header with task-add button */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-bold text-lg">{list.title}</h3>
@@ -45,7 +45,7 @@ const ListCard = ({
               draggable
               onDragStart={(e) => onTaskDragStart(e, task, list.id)}
               onDragEnd={onTaskDragEnd}
-              className={`${task.color} text-[var(--foreground)] p-2 rounded shadow cursor-move min-w-[150px]`}
+              className={`${task.color} text-[var(--white)] p-2 rounded shadow cursor-move min-w-[150px]`}
             >
               <h4 className="font-semibold text-sm">{task.title}</h4>
               <p className="text-xs">{task.description}</p>

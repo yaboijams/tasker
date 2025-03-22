@@ -8,6 +8,8 @@
   --thistle: #decdf5;
   --dimgrey: #656176;
   --davygrey: #534d56;
+  --white:#ffffff;
+  --darkerwhite:#ece8e8;
 }
 
 @theme inline {

@@ -47,6 +47,7 @@ const HomePage = () => {
     setActiveListId(listId);
     setIsTaskModalOpen(true);
   };
+  
 
   // Handle adding a new task to a list
   const handleAddTask = (listId, taskDetails) => {
@@ -74,6 +75,14 @@ const HomePage = () => {
     };
     setLists([...lists, newList]);
   };
+
+  const onTaskDragStart = (e, task, listId) => {
+    e.dataTransfer.setData("task", JSON.stringify({ task, listId }));
+  };
+
+  const onTaskDragEnd = () =>{
+    
+  }
 
   // Handle task movement with confetti trigger
   const onTaskDrop = (e, targetListId) => {
@@ -147,8 +156,8 @@ const HomePage = () => {
       <main className="flex-1 p-4 bg-gray-50">
         <TaskContainer
           lists={lists}
-          onTaskDragStart={() => {}}
-          onTaskDragEnd={() => {}}
+          onTaskDragStart={onTaskDragStart}
+          onTaskDragEnd={onTaskDragEnd}
           onTaskDrop={onTaskDrop} // Updated to trigger confetti
           onAddTask={openTaskModal}
           onAddList={() => setIsListModalOpen(true)}

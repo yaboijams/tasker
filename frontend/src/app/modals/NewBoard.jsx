@@ -7,6 +7,7 @@ const NewBoard = ({ isOpen, onClose, onSubmit }) => {
     e.preventDefault();
     onSubmit(boardName);
     setBoardName("");
+    onClose();
   };
 
   if (!isOpen) return null;

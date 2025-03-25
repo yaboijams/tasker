@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const Sidebar = ({ boards, selectedBoardId, onSelectBoard, onCreateBoard }) => {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
     <aside
-      className={`h-full bg-[var(--background)] border-r border-gray-200 p-4 flex flex-col transition-all duration-300 ${
-        collapsed ? 'w-16' : 'w-64'
+      className={`fixed top-0 left-0 h-full bg-[var(--background)] border-r border-gray-200 p-4 flex flex-col z-[1000] transition-all duration-300 ${
+        collapsed ? "w-16" : "w-64"
       }`}
     >
       <div className="flex items-center justify-between mb-4">
@@ -19,7 +19,7 @@ const Sidebar = ({ boards, selectedBoardId, onSelectBoard, onCreateBoard }) => {
           onClick={() => setCollapsed(!collapsed)}
           className="cursor-pointer text-[var(--foreground)] focus:outline-none transform transition-transform duration-200 active:scale-95"
         >
-          {collapsed ? '→' : '←'}
+          {collapsed ? "→" : "←"}
         </button>
       </div>
 
@@ -32,8 +32,8 @@ const Sidebar = ({ boards, selectedBoardId, onSelectBoard, onCreateBoard }) => {
               onClick={() => onSelectBoard(board.id)}
               className={`cursor-pointer p-2 rounded text-center transform transition-transform duration-200 active:scale-95 ${
                 selectedBoardId === board.id
-                  ? 'bg-[var(--thistle)]'
-                  : 'hover:bg-gray-100'
+                  ? "bg-[var(--thistle)]"
+                  : "hover:bg-gray-100"
               }`}
               title={board.name}
             >
@@ -57,8 +57,8 @@ const Sidebar = ({ boards, selectedBoardId, onSelectBoard, onCreateBoard }) => {
                 onClick={() => onSelectBoard(board.id)}
                 className={`cursor-pointer px-3 py-2 rounded transform transition-transform duration-200 active:scale-95 ${
                   selectedBoardId === board.id
-                    ? 'bg-[var(--thistle)]'
-                    : 'hover:bg-gray-100'
+                    ? "bg-[var(--thistle)]"
+                    : "hover:bg-gray-100"
                 }`}
               >
                 {board.name}

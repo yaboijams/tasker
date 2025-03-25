@@ -84,6 +84,14 @@ const HomePage = () => {
     setIsTaskModalOpen(false);
   };
 
+  const handleNewBoard = (boardName) => {
+    const newBoard = {
+      id: Date.now(),
+      name: boardName,
+    };
+    setBoards((prevBoards) => [...prevBoards, newBoard]);
+  };
+
   // Handle adding a new list (ListCard)
   const handleAddList = ({ title, priority }) => {
     const newList = {
@@ -224,7 +232,7 @@ const HomePage = () => {
       <NewBoard
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSubmit={() => {}}
+        onSubmit={handleNewBoard}
       />
       <NewTask
         isOpen={isTaskModalOpen}

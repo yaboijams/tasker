@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 
-const Sidebar = ({ boards, selectedBoardId, onSelectBoard, onCreateBoard }) => {
-  const [collapsed, setCollapsed] = useState(false);
-
+const Sidebar = ({
+  boards,
+  selectedBoardId,
+  onSelectBoard,
+  onCreateBoard,
+  collapsed,
+  setCollapsed,
+}) => {
   return (
     <aside
       className={`fixed top-0 left-0 h-full bg-[var(--background)] border-r border-gray-200 p-4 flex flex-col z-[1000] transition-all duration-300 ${

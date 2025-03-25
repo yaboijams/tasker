@@ -30,6 +30,7 @@ const HomePage = () => {
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [isListModalOpen, setIsListModalOpen] = useState(false);
   const [activeListId, setActiveListId] = useState(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // For confetti fade-out effect
   const [showConfetti, setShowConfetti] = useState(false);
@@ -202,10 +203,17 @@ const HomePage = () => {
         selectedBoardId={selectedBoardId}
         onSelectBoard={(id) => setSelectedBoardId(id)}
         onCreateBoard={() => setIsModalOpen(true)}
+        collapsed={sidebarCollapsed}
+        setCollapsed={setSidebarCollapsed}
       />
 
-      {/* Main content area divided into three equal rows */}
-      <div className="flex flex-col flex-1">
+      {/* Main content area with dynamic left margin */}
+      <div
+        style={{
+          marginLeft: sidebarCollapsed ? "4rem" : "16rem",
+        }}
+        className="flex flex-col flex-1 transition-all duration-300"
+      >
         {/* Top Row: Widgets */}
         <div className="flex-1 bg-blue-100 overflow-auto">
           <WidgetsContainer />

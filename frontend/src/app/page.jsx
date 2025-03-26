@@ -8,6 +8,9 @@ import WidgetsContainer from "./components/WidgetsContainer";
 import NewBoard from "./modals/NewBoard";
 import NewTask from "./modals/NewTask";
 import NewList from "./modals/NewList";
+import { Amplify } from "aws-amplify";
+import awsExports from "../aws-exports";
+Amplify.configure(awsExports);
 
 // Dynamically import Confetti for client-side rendering only
 const Confetti = dynamic(() => import("react-confetti"), { ssr: false });

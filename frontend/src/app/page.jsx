@@ -13,19 +13,52 @@ import NewList from "./modals/NewList";
 const Confetti = dynamic(() => import("react-confetti"), { ssr: false });
 
 const HomePage = () => {
-  const [lists, setLists] = useState([
-    { id: 1, title: "To Do", tasks: [] },
-    { id: 2, title: "In Progress", tasks: [] },
-    { id: 3, title: "Done", tasks: [] },
-  ]);
-
+  // Boards now include lists and widgets as part of each board's data
   const [boards, setBoards] = useState([
-    { id: 1, name: "Personal Tasks" },
-    { id: 2, name: "Work Projects" },
-    { id: 3, name: "Miscellaneous" },
+    {
+      id: 1,
+      name: "Personal Tasks",
+      lists: [
+        {
+          id: 101,
+          title: "To Do",
+          tasks: [
+            {
+              id: 1001,
+              description: "Have to complete things",
+              color: "bg-blue-500",
+            },
+          ],
+        },
+        { id: 102, title: "In Progress", tasks: [] },
+        { id: 103, title: "Done", tasks: [] },
+      ],
+      widgets: [],
+    },
+    {
+      id: 2,
+      name: "Work Projects",
+      lists: [
+        { id: 201, title: "To Do", tasks: [] },
+        { id: 202, title: "In Progress", tasks: [] },
+        { id: 203, title: "Done", tasks: [] },
+      ],
+      widgets: [],
+    },
+    {
+      id: 3,
+      name: "Miscellaneous",
+      lists: [
+        { id: 301, title: "To Do", tasks: [] },
+        { id: 302, title: "In Progress", tasks: [] },
+        { id: 303, title: "Done", tasks: [] },
+      ],
+      widgets: [],
+    },
   ]);
 
-  const [selectedBoardId, setSelectedBoardId] = useState(lists[0].id);
+  // Track the selected board by its ID
+  const [selectedBoardId, setSelectedBoardId] = useState(boards[0].id);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [isListModalOpen, setIsListModalOpen] = useState(false);
@@ -37,7 +70,6 @@ const HomePage = () => {
   const [fadeOutConfetti, setFadeOutConfetti] = useState(false);
 
   // Detect screen size for Confetti
-  // Initialize with safe default values since window is undefined on the server.
   const [windowSize, setWindowSize] = useState({
     width: 0,
     height: 0,
@@ -45,24 +77,23 @@ const HomePage = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // Set initial window size
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
       });
-
-      // Update state on window resize
       const handleResize = () => {
         setWindowSize({
           width: window.innerWidth,
           height: window.innerHeight,
         });
       };
-
       window.addEventListener("resize", handleResize);
       return () => window.removeEventListener("resize", handleResize);
     }
   }, []);
+
+  // Get the currently selected board based on selectedBoardId
+  const currentBoard = boards.find((board) => board.id === selectedBoardId);
 
   // Open the new task modal for a specific list
   const openTaskModal = (listId) => {
@@ -70,30 +101,46 @@ const HomePage = () => {
     setIsTaskModalOpen(true);
   };
 
-  // Handle adding a new task to a list
+  // Add a new task to a list within the current board
   const handleAddTask = (listId, taskDetails) => {
-    const newTask = { id: Date.now(), ...taskDetails };
-
-    setLists((prevLists) =>
-      prevLists.map((list) => {
-        if (list.id === listId) {
-          return { ...list, tasks: [...list.tasks, newTask] };
-        }
-        return list;
-      })
-    );
+    setBoards((prevBoards) => {
+      const updatedBoards = prevBoards.map((board) => {
+        if (board.id !== selectedBoardId) return board;
+        return {
+          ...board,
+          lists: board.lists.map((list) => {
+            if (list.id !== listId) return list;
+            return {
+              ...list,
+              tasks: [...list.tasks, { id: Date.now(), ...taskDetails }],
+            };
+          }),
+        };
+      });
+      // Log the updated boards structure so you can inspect the tasks format
+      console.log("Updated Boards:", updatedBoards);
+      return updatedBoards;
+    });
     setIsTaskModalOpen(false);
   };
 
+  // Create a new board with default lists and widgets, and select it immediately
   const handleNewBoard = (boardName) => {
     const newBoard = {
       id: Date.now(),
       name: boardName,
+      lists: [
+        { id: Date.now() + 1, title: "To Do", tasks: [] },
+        { id: Date.now() + 2, title: "In Progress", tasks: [] },
+        { id: Date.now() + 3, title: "Done", tasks: [] },
+      ],
+      widgets: [],
     };
     setBoards((prevBoards) => [...prevBoards, newBoard]);
+    setSelectedBoardId(newBoard.id);
   };
 
-  // Handle adding a new list (ListCard)
+  // Add a new list to the current board
   const handleAddList = ({ title, priority }) => {
     const newList = {
       id: Date.now(),
@@ -101,9 +148,15 @@ const HomePage = () => {
       priority,
       tasks: [],
     };
-    setLists([...lists, newList]);
+    setBoards((prevBoards) =>
+      prevBoards.map((board) => {
+        if (board.id !== selectedBoardId) return board;
+        return { ...board, lists: [...board.lists, newList] };
+      })
+    );
   };
 
+  // Drag-and-drop logic for tasks, updating only the current board
   const onTaskDragStart = (e, task, listId) => {
     e.dataTransfer.setData("task", JSON.stringify({ task, listId }));
   };
@@ -112,73 +165,67 @@ const HomePage = () => {
     // Additional logic can be added here if needed.
   };
 
-  // Handle task movement with confetti trigger and smooth fade out.
   const onTaskDrop = (e, targetListId) => {
     e.preventDefault();
     const data = JSON.parse(e.dataTransfer.getData("task"));
 
-    setLists((prevLists) => {
-      const sourceListIndex = prevLists.findIndex(
-        (list) => list.id === data.listId
-      );
-      const targetListIndex = prevLists.findIndex(
-        (list) => list.id === targetListId
-      );
+    setBoards((prevBoards) =>
+      prevBoards.map((board) => {
+        if (board.id !== selectedBoardId) return board;
+        const sourceListIndex = board.lists.findIndex(
+          (list) => list.id === data.listId
+        );
+        const targetListIndex = board.lists.findIndex(
+          (list) => list.id === targetListId
+        );
+        if (sourceListIndex === -1 || targetListIndex === -1) return board;
 
-      if (sourceListIndex === -1 || targetListIndex === -1) return prevLists;
+        // Prevent duplicate tasks in the target list.
+        if (
+          board.lists[targetListIndex].tasks.some(
+            (task) => task.id === data.task.id
+          )
+        ) {
+          return board;
+        }
 
-      // Prevent duplicate tasks in the same list
-      if (
-        prevLists[targetListIndex].tasks.some(
-          (task) => task.id === data.task.id
-        )
-      ) {
-        return prevLists;
-      }
+        const taskToMove = data.task;
+        const updatedSourceTasks = board.lists[sourceListIndex].tasks.filter(
+          (task) => task.id !== taskToMove.id
+        );
+        const updatedTargetTasks = [
+          ...board.lists[targetListIndex].tasks,
+          taskToMove,
+        ];
 
-      // Remove the task from the source list
-      const taskToMove = data.task;
-      const updatedSourceTasks = prevLists[sourceListIndex].tasks.filter(
-        (task) => task.id !== taskToMove.id
-      );
+        const updatedLists = [...board.lists];
+        updatedLists[sourceListIndex] = {
+          ...board.lists[sourceListIndex],
+          tasks: updatedSourceTasks,
+        };
+        updatedLists[targetListIndex] = {
+          ...board.lists[targetListIndex],
+          tasks: updatedTargetTasks,
+        };
 
-      // Add the task to the target list
-      const updatedTargetTasks = [
-        ...prevLists[targetListIndex].tasks,
-        taskToMove,
-      ];
+        // Optionally trigger confetti if the task is dropped into the "Done" list.
+        if (updatedLists[targetListIndex].title === "Done") {
+          setShowConfetti(true);
+          setTimeout(() => setFadeOutConfetti(true), 5000);
+          setTimeout(() => {
+            setShowConfetti(false);
+            setFadeOutConfetti(false);
+          }, 6000);
+        }
 
-      const updatedLists = [...prevLists];
-      updatedLists[sourceListIndex] = {
-        ...prevLists[sourceListIndex],
-        tasks: updatedSourceTasks,
-      };
-      updatedLists[targetListIndex] = {
-        ...prevLists[targetListIndex],
-        tasks: updatedTargetTasks,
-      };
-
-      // Trigger Confetti if moving to "Done" list
-      if (updatedLists[targetListIndex].title === "Done") {
-        setShowConfetti(true);
-        // After 5 seconds, trigger fade out
-        setTimeout(() => {
-          setFadeOutConfetti(true);
-        }, 5000);
-        // After 6 seconds, unmount the confetti
-        setTimeout(() => {
-          setShowConfetti(false);
-          setFadeOutConfetti(false);
-        }, 6000);
-      }
-
-      return updatedLists;
-    });
+        return { ...board, lists: updatedLists };
+      })
+    );
   };
 
   return (
     <div className="flex h-screen">
-      {/* Confetti Effect with smooth fade-out */}
+      {/* Confetti Effect */}
       {showConfetti && (
         <div
           className={`absolute z-50 pointer-events-none ${
@@ -197,7 +244,7 @@ const HomePage = () => {
         </div>
       )}
 
-      {/* Sidebar remains outside the row structure */}
+      {/* Sidebar */}
       <Sidebar
         boards={boards}
         selectedBoardId={selectedBoardId}
@@ -207,22 +254,22 @@ const HomePage = () => {
         setCollapsed={setSidebarCollapsed}
       />
 
-      {/* Main content area with dynamic left margin */}
+      {/* Main Content Area */}
       <div
         style={{
           marginLeft: sidebarCollapsed ? "4rem" : "16rem",
         }}
         className="flex flex-col flex-1 transition-all duration-300"
       >
-        {/* Top Row: Widgets */}
+        {/* Widgets (Board-specific) */}
         <div className="flex-1 bg-blue-100 overflow-auto">
-          <WidgetsContainer />
+          <WidgetsContainer widgets={currentBoard?.widgets || []} />
         </div>
 
-        {/* Middle Row: TaskContainer */}
+        {/* Task Container (Board-specific) */}
         <div className="flex-1 bg-gray-50 overflow-auto">
           <TaskContainer
-            lists={lists}
+            lists={currentBoard?.lists || []}
             onTaskDragStart={onTaskDragStart}
             onTaskDragEnd={onTaskDragEnd}
             onTaskDrop={onTaskDrop}
@@ -231,12 +278,13 @@ const HomePage = () => {
           />
         </div>
 
-        {/* Bottom Row: Dummy Section */}
+        {/* Dummy Bottom Section */}
         <div className="flex-1 bg-green-100 flex items-center justify-center">
           <p className="text-lg text-gray-700">Dummy Bottom Section Content</p>
         </div>
       </div>
 
+      {/* Modals */}
       <NewBoard
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

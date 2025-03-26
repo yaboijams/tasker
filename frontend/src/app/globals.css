@@ -8,20 +8,24 @@
   --thistle: #decdf5;
   --dimgrey: #656176;
   --davygrey: #534d56;
-  --white:#ffffff;
-  --darkerwhite:#ece8e8;
+  --white: #ffffff;
+  --darkerwhite: #ece8e8;
 }
+
+/* Existing keyframes and popOut styles */
 @keyframes popOut {
   0% {
     transform: scale(1);
     opacity: 1;
     box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
   }
+
   50% {
     transform: scale(1.1);
     opacity: 1;
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
   }
+
   100% {
     transform: scale(1.05);
     opacity: 1;
@@ -37,6 +41,30 @@
   animation: popOut 0.3s ease-in-out forwards;
 }
 
+/* Animated gradient background for modals */
+@keyframes gradient-x {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-gradient {
+  background: linear-gradient(270deg,
+#1b998b,
+#f8f1ff,
+ #decdf5,
+ #656176);
+  background-size: 400% 400%;
+  animation: gradient-x 15s ease infinite;
+}
 
 @theme inline {
   --color-background: var(--background);
@@ -53,5 +81,5 @@
 }
 
 body {
-
+  /* your global body styles */
 }

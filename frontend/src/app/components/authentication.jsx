@@ -18,8 +18,8 @@ const Authentication = ({ isOpen, onClose }) => {
     // Decide which endpoint to call
     const endpoint =
       mode === "signin"
-        ? "http://localhost:4000/auth/signin"
-        : "http://localhost:4000/auth/signup";
+        ? "http://localhost:3001/auth/signin"
+        : "http://localhost:3001/auth/signup";
 
     try {
       const response = await fetch(endpoint, {

@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* 
+  1. Color Variables
+  Keeping your original variables plus adding some pastel fun 
+*/
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -10,22 +14,30 @@
   --davygrey: #534d56;
   --white: #ffffff;
   --darkerwhite: #ece8e8;
+
+  /* New pastel colors for a cartoon vibe */
+  --pastelpink: #ffd1dc;
+  --pastelblue: #c7e9f7;
+  --pastelyellow: #fff3b0;
+  --pastelpurple: #e4d0ff;
 }
 
-/* Existing keyframes and popOut styles */
+/* 
+  2. Fun Keyframes 
+  - popOut (existing)
+  - wiggle: a playful wobble
+*/
 @keyframes popOut {
   0% {
     transform: scale(1);
     opacity: 1;
     box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
   }
-
   50% {
     transform: scale(1.1);
     opacity: 1;
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
   }
-
   100% {
     transform: scale(1.05);
     opacity: 1;
@@ -33,39 +45,113 @@
   }
 }
 
+@keyframes wiggle {
+  0% {
+    transform: rotate(0deg);
+  }
+  15% {
+    transform: rotate(3deg);
+  }
+  30% {
+    transform: rotate(-3deg);
+  }
+  45% {
+    transform: rotate(2deg);
+  }
+  60% {
+    transform: rotate(-2deg);
+  }
+  75% {
+    transform: rotate(1deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* 
+  3. Hover/Animation Classes 
+  - pop-out-hover: existing
+  - wiggle-hover: new
+*/
 .pop-out-hover {
   @apply transition-transform duration-200 ease-in-out;
 }
-
 .pop-out-hover:hover {
   animation: popOut 0.3s ease-in-out forwards;
 }
 
-/* Animated gradient background for modals */
+.wiggle-hover {
+  @apply transition-transform duration-200 ease-in-out;
+}
+.wiggle-hover:hover {
+  animation: wiggle 0.5s ease-in-out;
+}
+
+/* 
+  4. Animated Gradient Background 
+  (We replaced your original gradient colors with a pastel palette)
+*/
 @keyframes gradient-x {
   0% {
     background-position: 0% 50%;
   }
-
   50% {
     background-position: 100% 50%;
   }
-
   100% {
     background-position: 0% 50%;
   }
 }
 
 .animated-gradient {
-  background: linear-gradient(270deg,
-#1b998b,
-#f8f1ff,
- #decdf5,
- #656176);
+  background: linear-gradient(
+    270deg,
+    var(--pastelpink),
+    var(--pastelblue),
+    var(--pastelyellow),
+    var(--pastelpurple)
+  );
   background-size: 400% 400%;
   animation: gradient-x 15s ease infinite;
 }
 
+/* 
+  5. Cartoonish Utility Classes
+  - cartoon-border: a thick, hand-drawn style border
+  - cartoon-shadow: a big, bold shadow for playful depth
+  - bounce-in: a quick bounce effect on load
+*/
+.cartoon-border {
+  border: 4px solid #000000; /* thick black outline for a comic look */
+  border-radius: 1rem;
+}
+
+.cartoon-shadow {
+  box-shadow: 0 0 0.75rem 0.25rem rgba(0, 0, 0, 0.25);
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.bounce-in {
+  animation: bounceIn 0.6s ease-out;
+}
+
+/* 
+  6. Theme & Dark Mode 
+*/
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -80,6 +166,15 @@
   }
 }
 
+/* 
+  7. Global Body Styles 
+  - Optional: add a whimsical font, or keep system font
+*/
 body {
-  /* your global body styles */
+  margin: 0;
+  padding: 0;
+  font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif; /* for extra cartoon flair */
+  color: var(--foreground);
+  background-color: var(--background);
+  -webkit-font-smoothing: antialiased;
 }

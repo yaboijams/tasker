@@ -8,6 +8,7 @@ const listsRoutes = require("./routes/lists");
 const cardsRoutes = require("./routes/cards");
 const boardsRoutes = require("./routes/boards");
 const spotifyRoutes = require("./routes/spotify");
+const authRoutes = require("./routes/auth");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use("/api/lists", listsRoutes);
 app.use("/api/cards", cardsRoutes);
 app.use("/api/boards", boardsRoutes);
 app.use("/spotify", spotifyRoutes);
+app.use("/auth", authRoutes);
 
 // Optional: Basic route to verify the server is running
 app.get("/", (req, res) => {

@@ -12,6 +12,13 @@ const Sidebar = ({
   setCollapsed,
 }) => {
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
+
+  // Logout handler: clear the userEmail state (and optionally clear tokens)
+  const handleLogout = () => {
+    setUserEmail("");
+    // Optionally: remove tokens from localStorage/cookies here.
+  };
 
   return (
     <aside
@@ -42,7 +49,7 @@ const Sidebar = ({
             <li
               key={board.id}
               onClick={() => onSelectBoard(board.id)}
-              className={`cursor-pointer p-2 rounded text-center transform transition-transform duration-200 active:scale-95 ${
+              className={`cursor-pointer p-2 rounded text-center transition-transform duration-200 active:scale-95 ${
                 selectedBoardId === board.id
                   ? "bg-[var(--thistle)]"
                   : "hover:bg-gray-100"
@@ -58,7 +65,7 @@ const Sidebar = ({
         <>
           <button
             onClick={onCreateBoard}
-            className="cursor-pointer bg-[var(--persiangreen)] text-white px-3 py-1 rounded hover:bg-opacity-90 mb-4 transform transition-transform duration-200 active:scale-95"
+            className="cursor-pointer bg-[var(--persiangreen)] text-white px-3 py-1 rounded hover:bg-opacity-90 mb-4 transition-transform duration-200 active:scale-95"
           >
             New Board
           </button>
@@ -67,7 +74,7 @@ const Sidebar = ({
               <li
                 key={board.id}
                 onClick={() => onSelectBoard(board.id)}
-                className={`cursor-pointer px-3 py-2 rounded transform transition-transform duration-200 active:scale-95 ${
+                className={`cursor-pointer px-3 py-2 rounded transition-transform duration-200 active:scale-95 ${
                   selectedBoardId === board.id
                     ? "bg-[var(--thistle)]"
                     : "hover:bg-gray-100"
@@ -80,9 +87,30 @@ const Sidebar = ({
         </>
       )}
 
-      {/* Authentication section at the bottom */}
+      {/* Authentication / User section at the bottom */}
       <div className="mt-auto">
-        {collapsed ? (
+        {userEmail ? (
+          collapsed ? (
+            // Collapsed: show only the first letter of the email
+            <button
+              onClick={handleLogout}
+              className="w-full text-center px-2 py-2 rounded hover:bg-gray-100"
+              title="Click to logout"
+            >
+              {userEmail.charAt(0)}
+            </button>
+          ) : (
+            // Expanded: show the full email and a Logout button
+            <div className="flex flex-col items-center space-y-2">
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-3 py-2 rounded hover:bg-gray-100"
+              >
+                {userEmail}
+              </button>
+            </div>
+          )
+        ) : collapsed ? (
           // In collapsed mode, show a simple icon trigger
           <div className="flex flex-col items-center space-y-2">
             <button
@@ -110,6 +138,10 @@ const Sidebar = ({
         <Authentication
           isOpen={isAuthModalOpen}
           onClose={() => setAuthModalOpen(false)}
+          onSuccess={(email) => {
+            setUserEmail(email);
+            setAuthModalOpen(false); // Automatically close the modal on success.
+          }}
         />
       )}
     </aside>

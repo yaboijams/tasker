@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Auth from "../modals/Auth";
 
-const Authentication = ({ isOpen, onClose }) => {
+const Authentication = ({ isOpen, onClose, onSuccess }) => {
   const [mode, setMode] = useState("signin"); // 'signin', 'signup', or 'verify'
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,16 +46,20 @@ const Authentication = ({ isOpen, onClose }) => {
       const data = await response.json();
 
       if (mode === "signin") {
-        // Sign in successful
         setMessage("Sign-in successful!");
+        // Optionally, call onSuccess to pass the user's email back to the parent:
+        if (onSuccess) {
+          onSuccess(email);
+        }
+        // Close the modal automatically after sign-in.
+        onClose();
       } else if (mode === "signup") {
-        // Sign-up successful; now prompt for verification
-        setMessage("Sign-up successful! Please enter the verification code sent to your email.");
+        setMessage(
+          "Sign-up successful! Please enter the verification code sent to your email."
+        );
         setMode("verify");
       } else if (mode === "verify") {
-        // Verification successful
         setMessage("Verification successful! You can now sign in.");
-        // Optionally, you could switch to signin mode automatically:
         setMode("signin");
       }
     } catch (err) {

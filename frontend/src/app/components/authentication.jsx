@@ -47,11 +47,10 @@ const Authentication = ({ isOpen, onClose, onSuccess }) => {
 
       if (mode === "signin") {
         setMessage("Sign-in successful!");
-        // Optionally, call onSuccess to pass the user's email back to the parent:
+        // Pass the returned user object to onSuccess so the front end can save it
         if (onSuccess) {
-          onSuccess(email);
+          onSuccess(data.user);
         }
-        // Close the modal automatically after sign-in.
         onClose();
       } else if (mode === "signup") {
         setMessage(

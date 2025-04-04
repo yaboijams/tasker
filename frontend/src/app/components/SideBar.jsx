@@ -12,11 +12,11 @@ const Sidebar = ({
   setCollapsed,
 }) => {
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
-  const [userEmail, setUserEmail] = useState("");
+  const [user, setUser] = useState(null); // user object from MongoDB (includes _id, email, etc.)
 
-  // Logout handler: clear the userEmail state (and optionally clear tokens)
+  // Logout handler: clear the user state (and optionally clear tokens)
   const handleLogout = () => {
-    setUserEmail("");
+    setUser(null);
     // Optionally: remove tokens from localStorage/cookies here.
   };
 
@@ -89,7 +89,7 @@ const Sidebar = ({
 
       {/* Authentication / User section at the bottom */}
       <div className="mt-auto">
-        {userEmail ? (
+        {user ? (
           collapsed ? (
             // Collapsed: show only the first letter of the email
             <button
@@ -97,7 +97,7 @@ const Sidebar = ({
               className="w-full text-center px-2 py-2 rounded hover:bg-gray-100"
               title="Click to logout"
             >
-              {userEmail.charAt(0)}
+              {user.email.charAt(0)}
             </button>
           ) : (
             // Expanded: show the full email and a Logout button
@@ -106,7 +106,7 @@ const Sidebar = ({
                 onClick={handleLogout}
                 className="w-full text-left px-3 py-2 rounded hover:bg-gray-100"
               >
-                {userEmail}
+                {user.email}
               </button>
             </div>
           )
@@ -138,8 +138,8 @@ const Sidebar = ({
         <Authentication
           isOpen={isAuthModalOpen}
           onClose={() => setAuthModalOpen(false)}
-          onSuccess={(email) => {
-            setUserEmail(email);
+          onSuccess={(userData) => {
+            setUser(userData);
             setAuthModalOpen(false); // Automatically close the modal on success.
           }}
         />

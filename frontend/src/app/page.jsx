@@ -128,20 +128,31 @@ const HomePage = () => {
   };
 
   // Create a new board with default lists and widgets, and select it immediately
-  const handleNewBoard = (boardName) => {
-    const newBoard = {
-      id: Date.now(),
-      name: boardName,
-      lists: [
-        { id: Date.now() + 1, title: "To Do", tasks: [] },
-        { id: Date.now() + 2, title: "In Progress", tasks: [] },
-        { id: Date.now() + 3, title: "Done", tasks: [] },
-      ],
-      widgets: [],
-    };
-    setBoards((prevBoards) => [...prevBoards, newBoard]);
-    setSelectedBoardId(newBoard.id);
+  // In your HomePage component
+  const handleNewBoard = async (boardName) => {
+    try {
+      const response = await fetch("http://localhost:3001/api/boards/createboard", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title: boardName, description: "" }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to create board");
+      }
+  
+      const newBoard = await response.json();
+  
+      setBoards((prevBoards) => [...prevBoards, newBoard]);
+      setSelectedBoardId(newBoard._id);
+    } catch (error) {
+      console.error("Error creating board:", error);
+    }
   };
+  
+
 
   // Add a new list to the current board
   const handleAddList = ({ title, priority }) => {

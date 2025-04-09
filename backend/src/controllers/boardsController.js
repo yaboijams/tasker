@@ -1,5 +1,6 @@
 const Board = require("../models/Board");
 const User = require("../models/User");
+const mongoose = require("mongoose");
 
 exports.getAllBoards = async (req, res) => {
   try {
@@ -13,9 +14,12 @@ exports.getAllBoards = async (req, res) => {
 };
 
 exports.createBoard = async (req, res) => {
+  // Start a session for the transaction
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
-    // Assume req.user is set by an authentication middleware
-    // and contains at least the user _id.
+    // Assume req.user (set by authentication middleware) has at least the user _id.
     const userId = req.user._id;
     const { title, description } = req.body;
 
@@ -24,18 +28,32 @@ exports.createBoard = async (req, res) => {
       title,
       description,
       owner: userId,
-      // Optionally, add the user as a member by default.
+      // Optionally add the user as a member by default.
       members: [userId],
       lists: [] // You can optionally add default lists here.
     });
 
-    await newBoard.save();
+    // Save the new board using the session
+    await newBoard.save({ session });
 
-    // Update the user's document to add a reference to the new board.
-    await User.findByIdAndUpdate(userId, { $push: { boards: newBoard._id } });
+    // Update the user's document to include a reference to the new board.
+    // This assumes your User model has a "boards" field that is an array.
+    await User.findByIdAndUpdate(
+      userId,
+      { $push: { boards: newBoard._id } },
+      { session }
+    );
+
+    // Commit the transaction so that both operations persist.
+    await session.commitTransaction();
+    session.endSession();
 
     res.status(201).json(newBoard);
   } catch (error) {
+    // In case of error, abort the transaction.
+    await session.abortTransaction();
+    session.endSession();
+
     console.error("Error creating board:", error);
     res.status(500).json({ error: "Failed to create board" });
   }

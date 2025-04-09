@@ -1,17 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const boardsController = require("../controllers/boardsController");
+const {createBoard, getAllBoards} = require("../controllers/boardsController");
 
 // GET all boards
-router.get("/", boardsController.getAllBoards);
+router.get("/", getAllBoards);
 
 // POST create a new board
-router.post("/", boardsController.createBoard);
+router.post("/createboard", createBoard);
 
 // PUT update a board by ID
-router.put("/:id", boardsController.updateBoard);
+// router.put("/:id", boardsController.updateBoard);
 
 // DELETE a board by ID
-router.delete("/:id", boardsController.deleteBoard);
+// router.delete("/:id", boardsController.deleteBoard);
 
 module.exports = router;
